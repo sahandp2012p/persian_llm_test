@@ -1,4 +1,4 @@
-import os
+mport os
 import fitz  # PyMuPDF for PDF processing
 import warnings
 import pygame  # For playing audio files
@@ -64,7 +64,7 @@ def listen():
     with mic as source:
         print("🎤 در حال گوش دادن... لطفاً صحبت کنید.")
         recognizer.adjust_for_ambient_noise(source)
-        audio = recognizer.listen(source)
+        audio = recognizer.listen(source)  # listens until silence detected
 
     try:
         print("📝 در حال تبدیل صدا به متن...")
