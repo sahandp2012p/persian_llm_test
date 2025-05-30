@@ -15,6 +15,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.chat_models import init_chat_model
 from langchain.schema import SystemMessage, HumanMessage
+from langchain.memory import ConversationBufferMemory
 import openai
 
 # --- Configuration ---
@@ -59,7 +60,6 @@ def initialize_rag_pipeline():
     print("🔄 Loading embedding model...")
     embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     print("✅ Embedding model loaded.")
-
     index_file = os.path.join(FAISS_FOLDER, "index.faiss")
     pkl_file = os.path.join(FAISS_FOLDER, "index.pkl")
 
@@ -97,6 +97,9 @@ if __name__ == '__main__':
         print("Please resolve the issues and restart the script.")
         exit()
 
+    # Initialize conversation memory
+    memory = ConversationBufferMemory(return_messages=True)
+
     print("\n--- ESL Tutor Ready ---")
     print("❓ سوال خود را تایپ کنید. برای خروج بنویسید 'exit' یا 'خروج'.")
 
@@ -129,11 +132,20 @@ Question:
 {query}
 """
 
+            # Load conversation history from memory
+            history = memory.load_memory_variables({}).get("history", [])
+
+            # Combine past messages + new human prompt
+            messages = history + [HumanMessage(content=prompt)]
+
             print("🧠 دریافت پاسخ از مدل زبانی...")
-            response = llm([
-                SystemMessage(content="You are a helpful English tutor for ESL learners."),
-                HumanMessage(content=prompt)
-            ])
+            response = llm(messages)
+
+            # Save new interaction to memory
+            memory.save_context(
+                {"input": prompt},
+                {"output": response.content}
+            )
 
             print("\n✅ پاسخ:\n", response.content)
 
