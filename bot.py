@@ -58,7 +58,7 @@ def initialize_rag_pipeline():
     print(f"Generated {len(chunks)} text chunks.")
 
     print("🔄 Loading embedding model...")
-    embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2", model_kwargs={"device": "cpu"})
     print("✅ Embedding model loaded.")
     index_file = os.path.join(FAISS_FOLDER, "index.faiss")
     pkl_file = os.path.join(FAISS_FOLDER, "index.pkl")
