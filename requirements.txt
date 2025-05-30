@@ -67,7 +67,6 @@ nvidia-nccl-cu12==2.26.2
 nvidia-nvjitlink-cu12==12.6.85
 nvidia-nvtx-cu12==12.6.77
 openai==1.82.0
-openai-whisper @ git+https://github.com/openai/whisper@dd985ac4b90cafeef8712f2998d62c59c3e62d22
 orjson==3.10.18
 packaging==24.2
 pandas==2.2.3
@@ -75,7 +74,6 @@ pillow==11.2.1
 propcache==0.3.1
 protobuf==6.31.1
 pyarrow==20.0.0
-PyAudio==0.2.14
 pycparser==2.22
 pydantic==2.11.5
 pydantic-settings==2.9.1
