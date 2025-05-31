@@ -23,7 +23,6 @@ PDF_PATH = "Complete English All-in-One for ESL Learners Book.pdf"
 TEXT_PATH = "esl_book.txt"
 FAISS_FOLDER = "esl_book_faiss_index"
 
-
 def initialize_rag_pipeline():
     print("--- Initializing RAG components ---")
 
@@ -119,31 +118,26 @@ if __name__ == '__main__':
             docs = db.similarity_search(query, k=4)
             retrieved_content = "\n\n".join(doc.page_content for doc in docs)
 
-            prompt = f"""You are a Persian tutor whose students are Persian.
-Use the following excerpts from an ESL textbook to answer the question.
-Keep a normal conversation until someone asks you for an English tutorial. Provide a detailed explanation.
-Don't explain anything unless they want you to. Answer the question in Persian.
-Don't say anything in English unless it’s about teaching something.
+            context_prompt = f"""
+از بخش‌های زیر از یک کتاب آموزش زبان انگلیسی برای زبان‌آموزان استفاده کن تا به سوال پاسخ دهی.
+پاسخ را به فارسی بده، مگر اینکه از تو خواسته شود چیزی را به انگلیسی آموزش دهی.
 
-Context:
+متن:
 {retrieved_content}
-
-Question:
-{query}
 """
 
             # Load conversation history from memory
             history = memory.load_memory_variables({}).get("history", [])
 
-            # Combine past messages + new human prompt
-            messages = history + [HumanMessage(content=prompt)]
+            # Build the full message list
+            messages = [SystemMessage(content=context_prompt)] + history + [HumanMessage(content=query)]
 
             print("🧠 دریافت پاسخ از مدل زبانی...")
             response = llm(messages)
 
-            # Save new interaction to memory
+            # Save this interaction to memory
             memory.save_context(
-                {"input": prompt},
+                {"input": query},
                 {"output": response.content}
             )
 
