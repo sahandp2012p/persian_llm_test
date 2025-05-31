@@ -2,9 +2,10 @@ import streamlit as st
 from bot import initialize_rag_pipeline
 from langchain.schema import SystemMessage, HumanMessage
 
+
 # Configure page
 st.set_page_config(
-    page_title="Persian ESL Tutor", 
+    page_title="Persian ESL Tutor",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -13,9 +14,9 @@ st.set_page_config(
 st.markdown("""
 <style>
 .chat-message {
-    padding: 1.5rem; 
-    border-radius: 0.5rem; 
-    margin-bottom: 1rem; 
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
 }
@@ -44,8 +45,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # App title
-st.title("🧠 ESL Tutor for Persian Speakers")
-st.markdown("Type your question about English learning below:")
+st.title("🧠 معلم زبان انگلیسی ایرانی")
+st.markdown("سوال خود را درباره یادگیری انگلیسی بپرسید:")
 
 # Initialize session state for conversation history
 if "messages" not in st.session_state:
@@ -70,11 +71,11 @@ query = st.chat_input("سوال خود را وارد کمید: ")
 if query:
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": query})
-    
+
     # Display user message
     with st.chat_message("user"):
         st.markdown(query)
-    
+
     # Generate response
     with st.chat_message("assistant"):
         with st.spinner("درحال پاسخ دادن..."):
@@ -110,10 +111,10 @@ Question:
                 *previous_messages,
                 HumanMessage(content=prompt)
             ])
-            
+
             # Display response
             st.markdown(response.content)
-            
+
             # Add assistant response to chat history
             st.session_state.messages.append({"role": "assistant", "content": response.content})
 
@@ -121,11 +122,11 @@ Question:
 st.sidebar.title("Chat Controls")
 if st.sidebar.button("Clear Chat History"):
     st.session_state.messages = []
-    st.experimental_rerun()
+    st.rerun()
 
 # Add a more prominent clear chat button below the chat input
 col1, col2, col3 = st.columns([1, 1, 1])
 with col2:
     if st.button("🗑️ Clear Chat", use_container_width=True):
         st.session_state.messages = []
-        st.experimental_rerun()
+        st.rerun()
